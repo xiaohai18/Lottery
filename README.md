@@ -42,12 +42,12 @@ new Lottery(document.getElementById('lottery'), {
 ````
 
 
-##构造函数 Lottery 在配置项.
+##构造函数 Lottery 的全部配置项.
 
 ````javascript
 
-new Lottery(document.getElementById('lottery'),{
-	/*点击抽奖元素*/
+var _lottery = new Lottery(document.getElementById('lottery'),{
+    /*点击抽奖元素*/
     handler: '',
     /*点击抽奖的回调*/
     handlerCallback: function(_interface){},
@@ -82,12 +82,17 @@ new Lottery(document.getElementById('lottery'),{
     /*打断文字换行*/
     breakText: ['金币', '红包', '星豆'],
     /*礼物*/
-    products: [{
+    products: [
+	{
 		text: '小米电视',
 		imgUrl: 'http://www.host.com/img1.png'
 	},
 	...
-	]
+    ]
 });
 
+/*指定停止位置, index为索引 0-products.length */
+_lottery.stop(index, function(){
+
+});
 ````
