@@ -83,10 +83,11 @@ new Lottery(document.getElementById('lottery'), {
     breakText: ['金币', '红包', '星豆'],
     /*礼物*/
     products: [
-        /*{
+        {
 			text: '小米电视',
 			imgUrl: 'http://www.host.com/img1.png'
-		}*/
+		}
+		...
     ]
 });
 
