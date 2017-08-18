@@ -17,7 +17,7 @@
     transition: all .3s linear;
 }
 
-#start{
+#handler{
 	display: block;
 	margin: 0 auto;
 	padding: 0.5rem 1rem;
@@ -34,7 +34,7 @@
 
 <canvas width="300" height="300" id="lottery"></canvas>
 
-<button id="start" class="">开始抽奖</button>
+<button id="handler">开始抽奖</button>
 <script src="./Lottery.js"></script>
 <script>
 
@@ -106,7 +106,7 @@ var products = [
 ];
 
 new Lottery(document.getElementById('lottery'), {
-	handler: document.getElementById('start'),
+	handler: document.getElementById('handler'),
 	handlerCallback: function(_interface){
 		/*ajax获取中奖结果*/
 		_ajax(function(response){
