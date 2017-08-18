@@ -46,7 +46,7 @@ new Lottery(document.getElementById('lottery'), {
 
 ````javascript
 
-new Lottery(document.getElementById('lottery'), {
+new Lottery(document.getElementById('lottery'),{
 	/*点击抽奖元素*/
     handler: '',
     /*点击抽奖的回调*/
@@ -82,13 +82,12 @@ new Lottery(document.getElementById('lottery'), {
     /*打断文字换行*/
     breakText: ['金币', '红包', '星豆'],
     /*礼物*/
-    products: [
-        {
-			text: '小米电视',
-			imgUrl: 'http://www.host.com/img1.png'
-		}
-		...
-    ]
+    products: [{
+		text: '小米电视',
+		imgUrl: 'http://www.host.com/img1.png'
+	},
+	...
+	]
 });
 
 ````
