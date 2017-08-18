@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>大转盘抽奖</title>
+<style>
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#lottery{
+	display: block;
+	margin: 20px auto;
+	width: 300px;
+    transition: all .3s linear;
+}
+
+#start{
+	display: block;
+	margin: 0 auto;
+	padding: 0.5rem 1rem;
+	text-align: center;
+	border: 0;
+	border-radius: 5px;
+	background: #8b70bf;
+	color: #fff;
+	font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<canvas width="300" height="300" id="lottery"></canvas>
+
+<button id="start" class="">开始抽奖</button>
+<script src="./Lottery.js"></script>
+<script>
+
+/*模拟ajax请求数据返回*/
+function _ajax(callback){
+	/*jQuery.ajax({
+		url: url,
+		data: data,
+		success: function(response){
+			callback && callback(response);
+		}
+	})*/
+	setTimeout(function(){
+		var _index   = Math.floor(Math.random()*products.length);
+		var response = {id: 1, name: products[_index].name, index: _index};
+		callback && callback(response);
+	}, 100);
+}
+
+var products = [
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
+        "name": "100元红包"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "666金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "12800金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
+        "name": "50元红包"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "6666金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "520金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
+        "name": "10元红包"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "8888金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "300金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805153952694_2409.png",
+        "name": "100星豆"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "1200金币"
+    },
+    {
+        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
+        "name": "888金币"
+    }
+];
+
+new Lottery(document.getElementById('lottery'), {
+	handler: document.getElementById('start'),
+	handlerCallback: function(_interface){
+		/*ajax获取中奖结果*/
+		_ajax(function(response){
+			console.log(response);
+			/*指定停止的位置:索引*/
+			_interface.stop(response.index, function(){
+				alert('恭喜你中得:' + response.name)
+			});
+		});
+	},
+	products: products
+});
+
+
+</script>
+</body>
+</html>
