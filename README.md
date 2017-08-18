@@ -33,16 +33,19 @@ new Lottery(document.getElementById('lottery'), {
 			imgUrl: 'http://www.host.com/img1.png'
 		},
 		{
-			text: '小米电视',
-			imgUrl: 'http://www.host.com/img1.png'
+			text: '华为手机',
+			imgUrl: 'http://www.host.com/img2.png'
 		}
 		...
 	]
 });
-```
+````
 
-构造函数 Lottery 在配置项.
-```
+
+##构造函数 Lottery 在配置项.
+
+````javascript
+
 new Lottery(document.getElementById('lottery'), {
 	/*点击抽奖元素*/
     handler: '',
@@ -81,9 +84,10 @@ new Lottery(document.getElementById('lottery'), {
     /*礼物*/
     products: [
         /*{
-            imgUrl: 'http://',
-            text: '苹果手机',
-        }*/
+			text: '小米电视',
+			imgUrl: 'http://www.host.com/img1.png'
+		}*/
     ]
 });
+
 ````
