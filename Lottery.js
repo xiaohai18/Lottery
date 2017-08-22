@@ -63,6 +63,8 @@ Lottery.prototype = {
 
         this.diameter = iWidth;
         this.radius   = iWidth/2;
+
+        this.prefix('transition', this.options.transition);
     },
     /*获取文字的样式*/
     _getFontStyle: function(){
@@ -234,11 +236,17 @@ Lottery.prototype = {
     },
     /*设置旋转*/
     setRotateStyle: function(rotate){
-        this.oCanvas.style.webkitTransform = 'rotate(' + rotate + 'deg)';
-        this.oCanvas.style.mozTransform = 'rotate(' + rotate + 'deg)';
-        this.oCanvas.style.oTransform = 'rotate(' + rotate + 'deg)';
-        this.oCanvas.style.transform = 'rotate(' + rotate + 'deg)';
-        this.rotate = rotate;
+        this.prefix('transform', 'rotate(' + rotate + 'deg)');
+    },
+    prefix: function(attr, val){
+        var _fix = ['moz', 'o', 'webkit'], self = this;
+        _fix.map(function(item){
+            self.oCanvas.style[item + self.capitalize(attr)] = val;
+        });
+        self.oCanvas.style[attr] = val;
+    },
+    capitalize: function(str){
+        return str.substr(0, 1).toUpperCase() + str.substr(1);
     },
     /*判断指定className是否存在*/
     hasClass: function(elemet, className){
@@ -295,6 +303,8 @@ Lottery.prototype = {
             interval: 1000,
             /*速度5-30越大越快*/
             speed: 8,
+            /*canvas css3运动样式*/
+            transition: 'transform .3s linear',
             /*字体位置与样式*/
             font: {
                 y: '50%',

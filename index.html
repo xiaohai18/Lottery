@@ -10,31 +10,34 @@
 	padding: 0;
 }
 
-#lottery{
+#lottery-wrap{
+    position: relative;
 	display: block;
 	margin: 20px auto;
 	width: 300px;
-    transition: all .3s linear;
 }
 
-#handler{
-	display: block;
-	margin: 0 auto;
-	padding: 0.5rem 1rem;
-	text-align: center;
-	border: 0;
-	border-radius: 5px;
-	background: #8b70bf;
-	color: #fff;
-	font-size: 14px;
+
+#lottery-handler{
+    position: absolute;
+    z-index: 2;
+    width: 60px;
+    height: 74px;
+    left: 50%;
+    top: 50%;
+    margin: -44px 0 0 -30px;
+    background: url(./images/handler.png) no-repeat 50%;
+    background-size: contain;
 }
 </style>
 </head>
 <body>
 
-<canvas width="300" height="300" id="lottery"></canvas>
+<div id="lottery-wrap">
+    <div id="lottery-handler"></div>
+    <canvas width="300" height="300" id="lottery"></canvas>
+</div>
 
-<button id="handler">开始抽奖</button>
 <script src="./Lottery.js"></script>
 <script>
 
@@ -56,57 +59,57 @@ function _ajax(callback){
 
 var products = [
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
+        "imgUrl": "./images/redpacket.png",
         "name": "100元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "666金币"
-    },
-    {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "12800金币"
-    },
-    {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
-        "name": "50元红包"
-    },
-    {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "6666金币"
-    },
-    {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "520金币"
-    },
-    {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154111025_1229.png",
+        "imgUrl": "./images/redpacket.png",
         "name": "10元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "8888金币"
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "300金币"
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805153952694_2409.png",
-        "name": "100星豆"
+        "imgUrl": "./images/redpacket.png",
+        "name": "30元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "1200金币"
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
     },
     {
-        "imgUrl": "http://cdn.img-test.dingsns.com/pub/20170805154222912_5574.png",
-        "name": "888金币"
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
+    },
+    {
+        "imgUrl": "./images/redpacket.png",
+        "name": "30元红包"
+    },
+    {
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
+    },
+    {
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
+    },
+    {
+        "imgUrl": "./images/redpacket.png",
+        "name": "200元红包"
+    },
+    {
+        "imgUrl": "./images/redpacket.png",
+        "name": "10元红包"
     }
 ];
 
 new Lottery(document.getElementById('lottery'), {
-	handler: document.getElementById('handler'),
+	handler: document.getElementById('lottery-handler'),
 	handlerCallback: function(_interface){
 		/*ajax获取中奖结果*/
 		_ajax(function(response){
@@ -117,9 +120,13 @@ new Lottery(document.getElementById('lottery'), {
 			});
 		});
 	},
+    images: {
+        width: 22,
+        height: 29,
+        y: '88%',
+    },
 	products: products
 });
-
 
 </script>
 </body>

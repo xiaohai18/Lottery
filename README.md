@@ -62,6 +62,8 @@ var _lottery = new Lottery(document.getElementById('lottery'),{
     interval: 1000,
     /*速度5-30越大越快*/
     speed: 8,
+    /*canvas css3运动样式*/
+    transition: 'transform .3s linear',
     /*字体位置与样式*/
     font: {
         y: '50%',
