@@ -50,21 +50,20 @@ var _lottery = new Lottery(document.getElementById('lottery'),{
     handler: '',
     /*点击抽奖的回调*/
     handlerCallback: function(_interface){},
-    /*外层半径,非数字值的时候自适应宽度*/
-    outerRadius: 150,
-    /*内层半径*/
+    outerRadius: '',
     innerRadius: 0,
     /*循环填充数组颜色*/
     fillStyle: ['#ffdf8a', '#fffdc9'],
-    /*请参考 flexible*/
-    dpr: 1,
     /*重复触发的间距时间*/
     interval: 1000,
-    /*速度5-30越大越快*/
-    speed: 8,
-    /*canvas css3运动样式*/
-    transition: 'transform .3s linear',
+    /*速度越大越快*/
+    speed: 12,
+    /*运动最少持续时间*/
+    duration: 3000,
     /*字体位置与样式*/
+    /*画布显示缩放比例,值为1 安卓模糊*/
+    scale: this.ua.isIos ? 1 : 4,
+    /*字体样式,浅拷贝 需整个font对象传入*/
     font: {
         y: '50%',
         color: '#ee6500',
@@ -81,14 +80,13 @@ var _lottery = new Lottery(document.getElementById('lottery'),{
         height: 32
     },
     /*打断文字换行*/
-    breakText: ['金币', '红包', '星豆'],
+    breakText: ['金币', '红包'],
     /*礼物*/
     products: [
-	{
-		text: '小米电视',
-		imgUrl: 'http://www.host.com/img1.png'
-	},
-	...
+        /*{
+            imgUrl: 'http://',
+            text: '苹果手机',
+        }*/
     ]
 });
 
