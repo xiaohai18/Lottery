@@ -89,6 +89,7 @@ Lottery.prototype = {
     /*画扇形上的文字*/
     _drawText: function(){
         var fonts = this.options.font;
+        var scale = this.options.scale;
         for(var i = 0; i < this.size; i++){
             var textArr  = this._cleverBreak(this.options.products[i].name);
             this.ctx.save();
@@ -100,7 +101,7 @@ Lottery.prototype = {
             this.ctx.fillText(textArr[0], -this.ctx.measureText(textArr[0]).width/2, - fonts.y);
 
             if(textArr[1]){
-                var y = -(fonts.y-(parseInt(fonts.size*this.options.scale)*this.options.font.lineHeight)) ;
+                var y = -(fonts.y-(parseInt(fonts.size)*scale*this.options.font.lineHeight));
                 this.ctx.fillText(textArr[1], -this.ctx.measureText(textArr[1]).width/2, y);
             }
             this.ctx.restore();
