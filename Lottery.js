@@ -33,15 +33,12 @@ Lottery.prototype = {
 
         this._draw();
         this._start();
-        
-        //this._resize();
     },
     /*修正options参数*/
     _fixOptions: function(){
-        this.options.dpr   = this.options.dpr || 1;
         this.outerRadius   = parseInt(this.options.outerRadius) || this.radius;
-        this.innerRadius   = parseInt(this.options.innerRadius) || 0;
-        this.options.speed = Math.min(Math.max(5, this.options.speed), 30);
+        this.innerRadius   = parseInt(this.options.innerRadius) * this.options.scale || 0;
+        this.options.speed = Math.min(Math.max(1, this.options.speed), 30);
 
         if(String(this.options.font.y).indexOf('%') > 0){
             this.options.font.y = this.outerRadius * parseInt(this.options.font.y)/100;
@@ -53,41 +50,31 @@ Lottery.prototype = {
     },
     /*重置canvas尺寸*/
     _setLayout: function(){
-        var oCanvas = this.oCanvas;
-        var options = this.options;
-        var iWidth  = oCanvas.offsetWidth;
+        var oCanvas  = this.oCanvas;
+        var diameter = oCanvas.offsetWidth || oCanvas.clientWidth || oCanvas.width;
 
-        oCanvas.width  = iWidth;
-        oCanvas.height = iWidth;
-        oCanvas.style.height = iWidth + 'px';
+        oCanvas.style.height = diameter + 'px';
+        oCanvas.style.width = diameter + 'px';
 
-        this.diameter = iWidth;
-        this.radius   = iWidth/2;
+        diameter = diameter * this.options.scale;
 
-        this.prefix('transition', this.options.transition);
+        this.diameter = oCanvas.width = oCanvas.height = diameter;
+        this.radius   = diameter/2;
     },
     /*获取文字的样式*/
     _getFontStyle: function(){
-        var dpr = this.options.dpr;
+        var scale = this.options.scale;
         var fontStyle = this.options.font;
         return '{{style}} {{weight}} {{size}}/{{lineHeight}} {{family}}'.replace(/\{\{([^}]*)\}\}/g, function(a, b){
-            return b == 'size' ? parseInt(fontStyle[b]) * dpr + 'px' : fontStyle[b];
+            return b == 'size' ? parseInt(fontStyle[b]) * scale + 'px' : fontStyle[b];
         })
     },
-    /*重置窗口*/
-   /* _resize: function(){
-        var self = this;
-        window.addEventListener('resize', function(){
-            self._setLayout();
-            self._fixOptions();
-            self._draw();
-        }, false);
-    },*/
-
     /*画扇形*/
     _drawArc: function(){
         this.ctx.save();
         var fillStyle = this.options.fillStyle;
+        if(!fillStyle)return;
+      
         for(var i = 0; i < this.size; i++){
             var sAngle = this.sAngle + this.angle*i;
             this.ctx.beginPath();
@@ -113,7 +100,8 @@ Lottery.prototype = {
             this.ctx.fillText(textArr[0], -this.ctx.measureText(textArr[0]).width/2, - fonts.y);
 
             if(textArr[1]){
-                this.ctx.fillText(textArr[1], -this.ctx.measureText(textArr[1]).width/2, -(fonts.y - (parseInt(fonts.size)||12)));
+                var y = -(fonts.y-(parseInt(fonts.size*this.options.scale)*this.options.font.lineHeight)) ;
+                this.ctx.fillText(textArr[1], -this.ctx.measureText(textArr[1]).width/2, y);
             }
             this.ctx.restore();
 
@@ -140,10 +128,11 @@ Lottery.prototype = {
             height = this.options.images.height;
 
         this._loadImg(this.imgUrl, function(img){
+            var scale = self.options.scale;
             for(var i = 0; i < img.length; i++){
                 var ret = img[i], 
-                    w   = (width || ret.width) * self.options.dpr,
-                    h   = (height || ret.height) * self.options.dpr;
+                    w   = (width || ret.width) *  scale,
+                    h   = (height || ret.height) * scale;
 
                 self.ctx.save();
                 self.ctx.translate(self.radius, self.radius);
@@ -195,12 +184,23 @@ Lottery.prototype = {
     },
     /*开始旋转转盘*/
     _beginRotate: function(){
-        var self = this, iSpeed = this.options.speed;
+        var self = this, cSpeed = 0, is = 0,
+            iSpeed = this.options.speed;
+
+        self.cSpeed = 0;
         self.isOver = false;
         clearInterval(self.timer);
+
         self.timer = setInterval(function(){
-            self.setRotateStyle(self.rotate + iSpeed);
-            self.rotate += iSpeed;
+            is = (iSpeed-cSpeed)/iSpeed;
+            is = is > 0 ? Math.ceil(is) : Math.floor(is);
+            cSpeed += is;
+            if(cSpeed>iSpeed){
+                is = iSpeed;
+            }
+            self.cSpeed = cSpeed;
+            self.rotate += cSpeed;
+            self.setRotateStyle(self.rotate);
         }, 30);
     },
     /*开始抽奖*/
@@ -210,6 +210,7 @@ Lottery.prototype = {
         this._fastClick(this.options.handler, function(ev){
             if(self.hasClass(this, 'disabled'))return;
             if(self.isOver){
+                self.sTime = self.now();
                 self._beginRotate();
                 typeof self.options.handlerCallback === 'function' && self.options.handlerCallback.call(this, self);
             }
@@ -239,6 +240,7 @@ Lottery.prototype = {
         this.prefix('transform', 'rotate(' + rotate + 'deg)');
     },
     prefix: function(attr, val){
+        if(!val)return;
         var _fix = ['moz', 'o', 'webkit'], self = this;
         _fix.map(function(item){
             self.oCanvas.style[item + self.capitalize(attr)] = val;
@@ -255,35 +257,51 @@ Lottery.prototype = {
     },
     /*停止转动, idx为指定停止的位置*/
     stop: function(idx, callback){
-        if(this.options.interval > 0){
-            this._stop(idx, function(_interface){
-                _interface.isOver = false;
-                _interface.intervalTimer = setTimeout(function(){
-                    _interface.isOver = true;
-                    callback && callback(_interface);
-                }, _interface.options.interval)
-            });
-        }else{
-            this._stop.apply(this, arguments);
-        }
+        var iTime = Math.max(0, this.options.duration - this.now() + this.sTime);
+        var self  = this, durTimer = null;
+        durTimer = setTimeout(function(){
+            if(self.options.interval > 0){
+                self._stop(idx, function(_interface){
+                    _interface.isOver = false;
+                    _interface.intervalTimer = setTimeout(function(){
+                        _interface.isOver = true;
+                        clearTimeout(_interface.intervalTimer);
+                        callback && callback(_interface);
+                    }, _interface.options.interval)
+                });
+            }else{
+                self._stop.apply(self, arguments);
+            }
+            clearTimeout(durTimer);
+        }, iTime);
+
     },
     _stop: function(idx, callback){
-        var stopTimer  = null, self = this, iAngle = 360/self.size;
-        var iTarget    = self.rotate + 360*5 + (self.size - idx - self.rotate%360/iAngle) * iAngle;
-        var speedRatio = 35 - this.options.speed;
+        var stopTimer = null, self = this, iAngle = 360/self.size;
+        var iTarget   = self.rotate + 360*4 + (self.size - idx - self.rotate%360/iAngle) * iAngle;
+        var iSpeed    = this.options.speed;
 
         this.timer && clearInterval(this.timer);
         function move(){
-            var iSpeed = (iTarget - self.rotate)/speedRatio;
-                iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+            var cSpeed = (iTarget - self.rotate)/iSpeed;
+                cSpeed = cSpeed > 0 ? Math.ceil(cSpeed) : Math.floor(cSpeed);
 
-            self.rotate += iSpeed;
+            if(cSpeed > self.cSpeed){
+                cSpeed = self.cSpeed;
+            }
+            self.rotate += cSpeed;
             self.rotate >= iTarget && (self.rotate = iTarget, self.isOver = true);
             self.setRotateStyle(self.rotate);
-
             if(self.isOver){clearInterval(stopTimer); callback && callback(self);}
         }
-        stopTimer = setInterval(move, 45);
+        stopTimer = setInterval(move, 30);
+    },
+    now: function(){
+        return new Date() - 0;
+    },
+    ua: {
+        isIos: /iphone|ipad/i.test(navigator.userAgent),
+        isAndroid: /android/i.test(navigator.userAgent)
     },
     /*设置配置项*/
     _setOptions: function(options){
@@ -293,19 +311,20 @@ Lottery.prototype = {
             handler: '',
             /*点击抽奖的回调*/
             handlerCallback: function(_interface){},
-            outerRadius: 150,
+            outerRadius: '',
             innerRadius: 0,
             /*循环填充数组颜色*/
             fillStyle: ['#ffdf8a', '#fffdc9'],
-            /*请参考 flexible*/
-            dpr: 1,
             /*重复触发的间距时间*/
             interval: 1000,
-            /*速度5-30越大越快*/
-            speed: 8,
-            /*canvas css3运动样式*/
-            transition: 'transform .3s linear',
+            /*速度越大越快*/
+            speed: 12,
+            /*运动最少持续时间*/
+            duration: 3000,
             /*字体位置与样式*/
+            /*画布显示缩放比例,值为1 安卓模糊*/
+            scale: this.ua.isIos ? 1 : 4,
+            /*字体样式,浅拷贝 需整个font对象传入*/
             font: {
                 y: '50%',
                 color: '#ee6500',
@@ -322,7 +341,7 @@ Lottery.prototype = {
                 height: 32
             },
             /*打断文字换行*/
-            breakText: ['金币', '红包', '星豆'],
+            breakText: ['金币', '红包'],
             /*礼物*/
             products: [
                 /*{
