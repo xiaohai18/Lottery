@@ -2,7 +2,7 @@
 #html5移动端大转盘抽奖插件, 简单、易用、无依赖。
 
 <p align="center">
-    <img width="240px" src="https://raw.githubusercontent.com/hishion/Lottery/master/images/preview.png">
+    <img width="240px" src="https://raw.githubusercontent.com/hishion/Lottery/master/images/pic-preview.png">
 </p>
 ##step 1: 引入资源
 
