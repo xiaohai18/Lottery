@@ -86,6 +86,9 @@ Lottery.prototype = {
         }
         this.ctx.restore();
     },
+    isArray: function(arr){
+        return arr && Object.prototype.toString.call(arr) == '[object Array]';
+    },
     /*画扇形上的文字*/
     _drawText: function(){
         var fonts = this.options.font;
@@ -95,9 +98,8 @@ Lottery.prototype = {
             this.ctx.save();
             this.ctx.translate(this.radius, this.radius);
             this.ctx.rotate(this.angle * i);
-            this.ctx.fillStyle = fonts.color;
+            this.ctx.fillStyle = this.isArray(fonts.color) ? fonts.color[i%fonts.color.length] : fonts.color;
             this.ctx.font = this._getFontStyle();
-
             this.ctx.fillText(textArr[0], -this.ctx.measureText(textArr[0]).width/2, - fonts.y);
 
             if(textArr[1]){
@@ -328,7 +330,9 @@ Lottery.prototype = {
             /*字体样式,浅拷贝 需整个font对象传入*/
             font: {
                 y: '50%',
-                color: '#ee6500',
+                //color: '#ee6500',
+                /*循环填充字体颜色*/
+                color: ['#ee6500', '#f00'],
                 style: 'normal',
                 weight: 500,
                 size: '12px',
