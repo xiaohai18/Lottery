@@ -326,16 +326,16 @@ Lottery.prototype = {
             duration: 3000,
             /*字体位置与样式*/
             /*画布显示缩放比例,值为1 安卓模糊*/
-            scale: this.ua.isIos ? 1 : 2,
+            scale: this.ua.isIos ? 2 : 2,
             /*字体样式,浅拷贝 需整个font对象传入*/
             font: {
                 y: '50%',
-                //color: '#ee6500',
+                color: '#ee6500',
                 /*循环填充字体颜色*/
-                color: ['#ee6500', '#f00'],
+                //color: ['#f00', '#ee6500'],
                 style: 'normal',
                 weight: 500,
-                size: '12px',
+                size: '10px',
                 lineHeight: 1,
                 family: 'Arail'
             },
