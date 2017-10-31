@@ -324,7 +324,7 @@ Lottery.prototype = {
             duration: 3000,
             /*字体位置与样式*/
             /*画布显示缩放比例,值为1 安卓模糊*/
-            scale: this.ua.isIos ? 1 : 4,
+            scale: this.ua.isIos ? 1 : 2,
             /*字体样式,浅拷贝 需整个font对象传入*/
             font: {
                 y: '50%',
